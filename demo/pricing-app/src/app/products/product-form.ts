@@ -80,7 +80,9 @@ export class ProductForm {
     }
     const value = this.form.getRawValue();
     const id = this.id();
-    const request: Observable<Product> = id === undefined ? this.api.createProduct(value) : this.api.updateProduct(id, value);
+    // The SKU is fixed once created, so an update sends every field but it.
+    const changes = { name: value.name, categoryId: value.categoryId, listPrice: value.listPrice, status: value.status };
+    const request: Observable<Product> = id === undefined ? this.api.createProduct(value) : this.api.updateProduct(id, changes);
     this.saving.set(true);
     this.formError.set('');
     request.subscribe({
@@ -93,10 +95,13 @@ export class ProductForm {
       error: (error: unknown) => {
         this.saving.set(false);
         const { message, fields } = describeError(error);
-        for (const [field, text] of Object.entries(fields)) {
-          this.form.get(field)?.setErrors({ server: text });
-        }
-        this.formError.set(Object.keys(fields).length === 0 ? message : '');
+        const unshown = Object.entries(fields).filter(([field, text]) => {
+          const control = this.form.get(field);
+          control?.setErrors({ server: text });
+          return control === null;
+        });
+        // A message with no form field to show it on (or no field at all) goes above the buttons.
+        this.formError.set(unshown.length > 0 || Object.keys(fields).length === 0 ? message : '');
       }
     });
   }

@@ -80,7 +80,7 @@ export default defineConfig(
     extends: [playwright.configs["flat/recommended"]], // Web-first assertions, no sleeps, no forced clicks, awaited actions.
     rules: {
       // Tests get test/expect from the harness, whose fixtures guard every request.
-      "no-restricted-imports": ["error", { paths: [{ name: "@playwright/test", message: "Import test and expect from ../harness/fixtures.ts." }] }],
+      "no-restricted-imports": ["error", { paths: [{ name: "@playwright/test", message: "Import test, expect and types such as Page from ../harness/fixtures.ts." }] }],
       "playwright/no-conditional-in-test": "error", // A test takes one path; branch on data in the query that finds it.
       "playwright/no-skipped-test": "error", // Delete or fix a test; a skipped test reads as coverage that is not there.
       "playwright/no-wait-for-timeout": "error", // Wait for a condition, never for time.

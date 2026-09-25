@@ -6,6 +6,7 @@ import { openDb } from "./db.ts";
 import { blockReason, requireQaUrl } from "./guard.ts";
 
 export { expect };
+export type { Locator, Page, TestInfo } from "@playwright/test";
 
 /** Settings each app gives in playwright.config.ts under `use`. */
 export interface HarnessOptions {

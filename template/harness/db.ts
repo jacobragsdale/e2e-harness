@@ -69,7 +69,8 @@ const drivers: Readonly<Record<string, (url: URL, password: string) => Promise<C
       throw new Error(`No SQLite database at ${path}`);
     }
     const { DatabaseSync } = await import("node:sqlite");
-    const db = new DatabaseSync(path, { readOnly: true });
+    // The app writes to the same file; wait for its locks instead of failing with "database is locked".
+    const db = new DatabaseSync(path, { readOnly: true, timeout: 5000 });
     return {
       query: async (sql, params) =>
         Promise.resolve(

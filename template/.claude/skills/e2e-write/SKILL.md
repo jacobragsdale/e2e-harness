@@ -101,8 +101,8 @@ test.describe("Discount rules", () => {
 
 Rules, each from a failure seen in practice:
 
-- Import `test` and `expect` from `../harness/fixtures.ts`. Lint rejects `@playwright/test` in tests, because the
-  harness fixtures are what block non-QA hosts and unlisted writes.
+- Import `test`, `expect` and types such as `Page` from `../harness/fixtures.ts`. Lint rejects `@playwright/test`
+  in tests, because the harness fixtures are what block non-QA hosts and unlisted writes.
 - **Name tests as business sentences** ("a discontinued product cannot be repriced"). Group steps with `test.step`
   in the user's words. Tag with the area and any ticket id the user gave.
 - **Locators, in order:** `getByRole` with its accessible name; `getByLabel`; `getByText` for static content;
