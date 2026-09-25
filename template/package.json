@@ -1,0 +1,36 @@
+{
+  "name": "e2e",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "report": "playwright show-report",
+    "sql": "node harness/sql.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "test:harness": "node --test harness/*.test.ts",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test:harness"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
+    "@types/mssql": "^12.3.0",
+    "@types/node": "^24.13.6",
+    "@types/oracledb": "^7.0.3",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-playwright": "^2.12.0",
+    "prettier": "^3.9.9",
+    "typescript": "~6.0",
+    "typescript-eslint": "^8.70.1"
+  },
+  "dependencies": {
+    "mssql": "^12.7.2",
+    "oracledb": "^7.0.1"
+  }
+}

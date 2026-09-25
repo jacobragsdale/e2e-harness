@@ -1,0 +1,70 @@
+<div class="header">
+  <h1>Products</h1>
+  <a mat-flat-button routerLink="/products/new">New product</a>
+</div>
+
+<div class="filters">
+  <mat-form-field>
+    <mat-label>Search</mat-label>
+    <input matInput placeholder="Name or SKU" [value]="q()" (input)="q.set(search.value)" #search />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Category</mat-label>
+    <mat-select [value]="category()" (valueChange)="category.set($event)">
+      <mat-option value="">All categories</mat-option>
+      @for (c of categories.value(); track c.id) {
+        <mat-option [value]="c.id">{{ c.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Status</mat-label>
+    <mat-select [value]="status()" (valueChange)="status.set($event)">
+      <mat-option value="">Any status</mat-option>
+      <mat-option value="ACTIVE">Active</mat-option>
+      <mat-option value="DISCONTINUED">Discontinued</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+@if (products.isLoading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+@if (products.error()) {
+  <p role="alert">Could not load products.</p>
+}
+
+<table mat-table [dataSource]="products.value() ?? []">
+  <ng-container matColumnDef="sku">
+    <th mat-header-cell *matHeaderCellDef>SKU</th>
+    <td mat-cell *matCellDef="let p">{{ p.sku }}</td>
+  </ng-container>
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td mat-cell *matCellDef="let p">
+      <a [routerLink]="['/products', p.id]">{{ p.name }}</a>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="category">
+    <th mat-header-cell *matHeaderCellDef>Category</th>
+    <td mat-cell *matCellDef="let p">{{ p.categoryName }}</td>
+  </ng-container>
+  <ng-container matColumnDef="listPrice">
+    <th mat-header-cell *matHeaderCellDef>List price</th>
+    <td mat-cell *matCellDef="let p">{{ p.listPrice | currency: "USD" }}</td>
+  </ng-container>
+  <ng-container matColumnDef="finalPrice">
+    <th mat-header-cell *matHeaderCellDef>Final price</th>
+    <td mat-cell *matCellDef="let p">{{ p.finalPrice | currency: "USD" }}</td>
+  </ng-container>
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef>Status</th>
+    <td mat-cell *matCellDef="let p" [class.discontinued]="p.status === 'DISCONTINUED'">{{ p.status === "ACTIVE" ? "Active" : "Discontinued" }}</td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="columns"></tr>
+  <tr mat-row *matRowDef="let row; columns: columns"></tr>
+  <tr class="mat-mdc-row" *matNoDataRow>
+    <td class="mat-mdc-cell" [attr.colspan]="columns.length">No products match your filters.</td>
+  </tr>
+</table>
+<p>{{ count() }} products</p>

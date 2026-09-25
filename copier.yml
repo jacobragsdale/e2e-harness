@@ -1,0 +1,15 @@
+# Copier template for a Playwright e2e harness. Stamp into an app repo: uvx copier copy gh:jacobragsdale/e2e-harness e2e
+_subdirectory: template
+_answers_file: .copier-answers.yml
+_exclude: [node_modules, .env, test-results, playwright-report, "tests/_probe*"]
+
+# App-owned files: written once at stamp time, never touched by `copier update`.
+_skip_if_exists:
+  - playwright.config.ts
+  - docs/app.md
+  - tests/.gitkeep
+
+app_name:
+  type: str
+  help: The app under test, as its users name it
+  default: App

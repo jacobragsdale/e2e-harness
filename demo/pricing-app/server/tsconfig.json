@@ -1,0 +1,5 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": { "types": ["node"], "module": "nodenext", "target": "esnext", "erasableSyntaxOnly": true, "noEmit": true, "composite": false },
+  "include": ["*.ts"]
+}

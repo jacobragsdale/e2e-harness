@@ -1,0 +1,67 @@
+@if (product.error()) {
+  <h1>Product not found</h1>
+  <p><a routerLink="/products">Back to products</a></p>
+} @else if (product.value(); as p) {
+  <div class="header">
+    <h1>{{ p.name }}</h1>
+    <a mat-stroked-button [routerLink]="['/products', p.id, 'edit']">Edit product</a>
+    <button mat-flat-button type="button" (click)="reprice()" [disabled]="job()?.status === 'QUEUED' || job()?.status === 'RUNNING'">Reprice</button>
+  </div>
+
+  @if (job(); as j) {
+    @if (j.status === "QUEUED" || j.status === "RUNNING") {
+      <mat-progress-bar mode="indeterminate" />
+    }
+    <p role="status">Reprice job #{{ j.id }}: {{ j.status }}</p>
+  }
+
+  <dl>
+    <dt>SKU</dt>
+    <dd>{{ p.sku }}</dd>
+    <dt>Category</dt>
+    <dd>{{ p.categoryName }}</dd>
+    <dt>Status</dt>
+    <dd>{{ p.status === "ACTIVE" ? "Active" : "Discontinued" }}</dd>
+    <dt>List price</dt>
+    <dd>{{ p.listPrice | currency: "USD" }}</dd>
+    <dt>Final price</dt>
+    <dd data-testid="final-price">{{ p.finalPrice | currency: "USD" }}</dd>
+    <dt>Last updated</dt>
+    <dd>{{ p.updatedAt | date: "medium" }}</dd>
+  </dl>
+
+  <div class="header">
+    <h2>Discount rules</h2>
+    <button mat-stroked-button type="button" (click)="addRule()">Add rule</button>
+  </div>
+  <table mat-table [dataSource]="p.rules">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Rule</th>
+      <td mat-cell *matCellDef="let r">{{ r.name }}</td>
+    </ng-container>
+    <ng-container matColumnDef="percent">
+      <th mat-header-cell *matHeaderCellDef>Discount</th>
+      <td mat-cell *matCellDef="let r">{{ r.percent }}%</td>
+    </ng-container>
+    <ng-container matColumnDef="enabled">
+      <th mat-header-cell *matHeaderCellDef>Enabled</th>
+      <td mat-cell *matCellDef="let r">
+        <mat-slide-toggle [checked]="r.enabled" (change)="toggleRule(r, $event.checked)" />
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let r">
+        <button mat-icon-button type="button" aria-label="Edit rule" (click)="editRule(r)"><mat-icon>edit</mat-icon></button>
+        <button mat-icon-button type="button" (click)="deleteRule(r)"><mat-icon>delete</mat-icon></button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="ruleColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: ruleColumns"></tr>
+    <tr class="mat-mdc-row" *matNoDataRow>
+      <td class="mat-mdc-cell" [attr.colspan]="ruleColumns.length">No discount rules.</td>
+    </tr>
+  </table>
+} @else {
+  <mat-progress-bar mode="indeterminate" />
+}

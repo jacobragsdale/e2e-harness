@@ -1,0 +1,49 @@
+# {{ app_name }} e2e tests
+
+End-to-end tests for {{ app_name }}, run with [Playwright](https://playwright.dev) against the real QA deployment.
+
+## Run
+
+```bash
+npm install
+npx playwright install chromium
+cp .env.example .env          # QA URL, read-only DB URL and password
+npm test                      # the whole suite
+npx playwright test --ui      # pick and watch tests
+npm run report                # last run's HTML report
+npm run sql -- "SELECT ..."   # read-only query against the QA database
+```
+
+## Write and fix tests with Claude Code
+
+Open Claude Code in this folder (`cd e2e && claude`) and ask in plain words:
+
+- "Set up the e2e tests": the `e2e-setup` skill maps the app from source, configures QA safety, and writes tests for the
+  common workflows.
+- "Test that a discontinued product can't be repriced": `e2e-write` turns a requirement into a test.
+- "Why did last night's run fail?": `e2e-triage` sorts test bugs from app bugs, data drift and QA outages.
+
+## Safety
+
+The fixtures in `harness/fixtures.ts` run for every test:
+
+- The base URL and database URL must contain a QA marker (`qaMarkers`), or nothing runs.
+- Every browser request is checked. Reads may go to the app and `readHosts`. Writes may go only to the app, and only
+  to endpoints in `allowedWrites`. Anything else is aborted and fails the test.
+- Service workers are blocked, and Playwright's `request` API client is disabled: both would bypass that check.
+- The database is read-only three ways: one SELECT per query, a read-only or rolled-back transaction, and a
+  SELECT-only account (which you provide).
+- Tests change only records they create.
+
+## Layout
+
+| Path | What | Owner |
+|---|---|---|
+| `harness/` | fixtures, network guard, read-only DB, `sql` CLI, and their unit tests | template |
+| `.claude/skills/` | `e2e-setup`, `e2e-write`, `e2e-triage` | template |
+| `eslint.config.mjs`, `tsconfig.json`, `prettier.config.mjs`, `package.json` | lint, including Playwright rules and the import ban | template |
+| `playwright.config.ts` | QA markers, allowed writes, read hosts, workers, reporters | app |
+| `tests/` | the tests | app |
+| `docs/app.md` | screens, workflows, write endpoints, data, terms | app |
+
+Update template-owned files with `uvx copier update` (run from the app repo root: `uvx copier update e2e`).
