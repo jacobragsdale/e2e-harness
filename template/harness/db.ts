@@ -122,7 +122,9 @@ const drivers: Readonly<Record<string, (url: URL, password: string) => Promise<C
             request.input(`p${String(i + 1)}`, value);
           }
           const result = await request.query<Record<string, unknown>>(sql);
-          return result.recordset.slice(0, maxRows);
+          // Typed as always present, but undefined for a statement that returns no rows (SELECT ... INTO).
+          const rows: unknown = result.recordset;
+          return Array.isArray(rows) ? result.recordset.slice(0, maxRows) : [];
         } finally {
           await tx.rollback();
         }

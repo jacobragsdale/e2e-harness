@@ -12,7 +12,7 @@ behavior breaks. Every test here shares QA with people, so a test changes only d
 
 1. Read `docs/app.md` (screens, workflows, write endpoints, data) and `playwright.config.ts` (`allowedWrites`).
    If `docs/app.md` is still the unfilled template, run the e2e-setup skill first.
-2. Restate the requirement as one or more behaviors: *given* some data, *when* the user does something, *then* they
+2. Restate the requirement as one or more behaviors: _given_ some data, _when_ the user does something, _then_ they
    see an outcome. One behavior is one test.
 3. Read the Angular source for each screen involved (`../src/app`, or where `docs/app.md` says): the route, the
    component template (labels, button text, dialogs, error messages) and the service calls. The template is the
@@ -36,6 +36,7 @@ behavior breaks. Every test here shares QA with people, so a test changes only d
 
   Check the query first with `npm run sql -- "SELECT ..."`. The database is read-only; the harness refuses anything
   but a single SELECT.
+
 - When the expected value depends on found data, derive it from the row in the test with the business rule in
   plain sight (`const expected = listPrice * (1 - percent / 100)`), rather than hard-coding today's value.
 

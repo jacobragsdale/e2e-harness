@@ -27,19 +27,19 @@ Use the results already in `test-results/` when the user asks about a run that a
 
 Match the first line of the error, then confirm with `error-context.md` and the app source (`../src`).
 
-| Symptom | Likely cause | Action |
-|---|---|---|
-| `Harness guard: Blocked GET ... read from <host>` | The app now loads from a new host | Find out what the host is. Add it to `readHosts` if it's a font, CDN or SSO host; otherwise report it |
-| `Harness guard: Blocked <METHOD> ... not in allowedWrites` | The test triggers a write that isn't allowed, or the app added a call | Ask the user whether to allow it. Don't reroute the test around it |
-| `Harness guard: Uncaught page error` | The app threw in the browser | App bug: report it with the message |
-| `No QA data matches this query` | QA data changed and nothing fits the query | Loosen the query to what the test really needs, or ask for the data. Never hard-code an id |
-| `strict mode violation: ... resolved to N elements` | The locator is too broad | Scope it to a dialog, row or section. Never add `.first()` |
-| `element(s) not found`, the tree shows a different UI | The app changed the label or flow, or the test is wrong | Check the template in `../src`. If the change is intended, update the locator; if not, it's an app bug |
-| `element(s) not found`, the tree shows a spinner or empty state | The test outran loading or a background job | Wait on the visible outcome, with a longer timeout on that assertion |
-| Wrong value in `toHaveText`/`toHaveValue` | An app bug, or an expectation that doesn't match the found data | Work out the right value from the business rule and source. Change the test only if the test was wrong |
-| `net::ERR_*`, navigation timeouts, 5xx on every test | QA is down or unreachable | Check `curl -sI "$E2E_BASE_URL"`. Stop and report; don't edit tests |
-| Passes alone, fails in the full run | Tests share data or depend on order | Make the test create its own record or use a unique name |
-| Fails once in `--repeat-each 5` | A race | Replace the wait that assumes timing with an assertion on what the user sees |
+| Symptom                                                         | Likely cause                                                          | Action                                                                                                 |
+| --------------------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `Harness guard: Blocked GET ... read from <host>`               | The app now loads from a new host                                     | Find out what the host is. Add it to `readHosts` if it's a font, CDN or SSO host; otherwise report it  |
+| `Harness guard: Blocked <METHOD> ... not in allowedWrites`      | The test triggers a write that isn't allowed, or the app added a call | Ask the user whether to allow it. Don't reroute the test around it                                     |
+| `Harness guard: Uncaught page error`                            | The app threw in the browser                                          | App bug: report it with the message                                                                    |
+| `No QA data matches this query`                                 | QA data changed and nothing fits the query                            | Loosen the query to what the test really needs, or ask for the data. Never hard-code an id             |
+| `strict mode violation: ... resolved to N elements`             | The locator is too broad                                              | Scope it to a dialog, row or section. Never add `.first()`                                             |
+| `element(s) not found`, the tree shows a different UI           | The app changed the label or flow, or the test is wrong               | Check the template in `../src`. If the change is intended, update the locator; if not, it's an app bug |
+| `element(s) not found`, the tree shows a spinner or empty state | The test outran loading or a background job                           | Wait on the visible outcome, with a longer timeout on that assertion                                   |
+| Wrong value in `toHaveText`/`toHaveValue`                       | An app bug, or an expectation that doesn't match the found data       | Work out the right value from the business rule and source. Change the test only if the test was wrong |
+| `net::ERR_*`, navigation timeouts, 5xx on every test            | QA is down or unreachable                                             | Check `curl -sI "$E2E_BASE_URL"`. Stop and report; don't edit tests                                    |
+| Passes alone, fails in the full run                             | Tests share data or depend on order                                   | Make the test create its own record or use a unique name                                               |
+| Fails once in `--repeat-each 5`                                 | A race                                                                | Replace the wait that assumes timing with an assertion on what the user sees                           |
 
 ## Fix or report
 

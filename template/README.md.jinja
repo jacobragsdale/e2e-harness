@@ -37,13 +37,13 @@ The fixtures in `harness/fixtures.ts` run for every test:
 
 ## Layout
 
-| Path | What | Owner |
-|---|---|---|
-| `harness/` | fixtures, network guard, read-only DB, `sql` CLI, and their unit tests | template |
-| `.claude/skills/` | `e2e-setup`, `e2e-write`, `e2e-triage` | template |
-| `eslint.config.mjs`, `tsconfig.json`, `prettier.config.mjs`, `package.json` | lint, including Playwright rules and the import ban | template |
-| `playwright.config.ts` | QA markers, allowed writes, read hosts, workers, reporters | app |
-| `tests/` | the tests | app |
-| `docs/app.md` | screens, workflows, write endpoints, data, terms | app |
+| Path                                                                        | What                                                                   | Owner    |
+| --------------------------------------------------------------------------- | ---------------------------------------------------------------------- | -------- |
+| `harness/`                                                                  | fixtures, network guard, read-only DB, `sql` CLI, and their unit tests | template |
+| `.claude/skills/`                                                           | `e2e-setup`, `e2e-write`, `e2e-triage`                                 | template |
+| `eslint.config.mjs`, `tsconfig.json`, `prettier.config.mjs`, `package.json` | lint, including Playwright rules and the import ban                    | template |
+| `playwright.config.ts`                                                      | QA markers, allowed writes, read hosts, workers, reporters             | app      |
+| `tests/`                                                                    | the tests                                                              | app      |
+| `docs/app.md`                                                               | screens, workflows, write endpoints, data, terms                       | app      |
 
 Update template-owned files with `uvx copier update` (run from the app repo root: `uvx copier update e2e`).

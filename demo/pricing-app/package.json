@@ -4,7 +4,6 @@
   "scripts": {
     "ng": "ng",
     "start": "ng build && node server/server.ts",
-    "dev": "ng serve",
     "api": "node server/server.ts",
     "db:reset": "node server/server.ts --init --no-listen",
     "build": "ng build",

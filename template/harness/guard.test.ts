@@ -8,14 +8,14 @@ const rules = {
   allowedWrites: ["POST /api/orders", "PUT /api/orders/*", "DELETE /api/orders/*/lines/*", "POST /api/search/**"]
 };
 
-test("requireQaUrl accepts only URLs with a QA marker", () => {
+await test("requireQaUrl accepts only URLs with a QA marker", () => {
   assert.equal(requireQaUrl("https://shop-QA.example.com", ["qa"], "baseURL").host, "shop-qa.example.com");
   assert.throws(() => requireQaUrl("https://shop.example.com", ["qa"], "baseURL"), /does not look like QA/);
   assert.throws(() => requireQaUrl("https://shop-qa.example.com", [], "baseURL"), /does not look like QA/);
   assert.throws(() => requireQaUrl(undefined, ["qa"], "baseURL"), /not set/);
 });
 
-test("reads go to the app or readHosts only", () => {
+await test("reads go to the app or readHosts only", () => {
   assert.equal(blockReason("GET", "https://shop-qa.example.com/api/orders", rules), undefined);
   assert.equal(blockReason("GET", "https://fonts.googleapis.com/css2", rules), undefined);
   assert.equal(blockReason("GET", "https://img.cdn.example.net/a.png", rules), undefined);
@@ -24,7 +24,7 @@ test("reads go to the app or readHosts only", () => {
   assert.match(blockReason("GET", "https://evilcdn.example.net/", rules) ?? "", /not the app/);
 });
 
-test("writes need an allowedWrites rule for that method and path", () => {
+await test("writes need an allowedWrites rule for that method and path", () => {
   assert.equal(blockReason("POST", "https://shop-qa.example.com/api/orders", rules), undefined);
   assert.equal(blockReason("POST", "https://shop-qa.example.com/api/orders/", rules), undefined);
   assert.equal(blockReason("PUT", "https://shop-qa.example.com/api/orders/O-1?x=1", rules), undefined);

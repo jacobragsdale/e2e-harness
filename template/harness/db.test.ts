@@ -6,16 +6,22 @@ import { DatabaseSync } from "node:sqlite";
 import { test } from "node:test";
 import { assertReadOnlySql, openDb } from "./db.ts";
 
-test("assertReadOnlySql allows one SELECT or WITH statement", () => {
+await test("assertReadOnlySql allows one SELECT or WITH statement", () => {
   assertReadOnlySql("SELECT 1");
   assertReadOnlySql("  with x as (select 1) select * from x;");
   assertReadOnlySql("SELECT ';DROP TABLE t' AS s -- comment; delete\nFROM t");
-  assert.throws(() => assertReadOnlySql("DELETE FROM t"), /Only SELECT/);
-  assert.throws(() => assertReadOnlySql("/* SELECT */ UPDATE t SET a = 1"), /Only SELECT/);
-  assert.throws(() => assertReadOnlySql("SELECT 1; DELETE FROM t"), /one statement/);
+  assert.throws(() => {
+    assertReadOnlySql("DELETE FROM t");
+  }, /Only SELECT/);
+  assert.throws(() => {
+    assertReadOnlySql("/* SELECT */ UPDATE t SET a = 1");
+  }, /Only SELECT/);
+  assert.throws(() => {
+    assertReadOnlySql("SELECT 1; DELETE FROM t");
+  }, /one statement/);
 });
 
-test("openDb reads sqlite read-only and refuses non-QA URLs", async () => {
+await test("openDb reads sqlite read-only and refuses non-QA URLs", async () => {
   const path = join(mkdtempSync(join(tmpdir(), "e2e-")), "qa.sqlite");
   const seed = new DatabaseSync(path);
   seed.exec("CREATE TABLE T (ID INTEGER, NAME TEXT); INSERT INTO T VALUES (1, 'a'), (2, 'b');");

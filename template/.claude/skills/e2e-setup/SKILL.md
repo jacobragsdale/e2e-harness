@@ -102,16 +102,16 @@ says, then rerun until green.
 Write these tests without asking which ones, following the e2e-write skill (`.claude/skills/e2e-write/SKILL.md`)
 for data, locators, and verification. Cover each item that the app has, for each main entity:
 
-| Workflow | Tests |
-|---|---|
-| List | shows records; each search and filter narrows the results; the empty state shows when nothing matches |
-| Detail | opening a record from the list shows its key fields; an unknown id shows the not-found state |
-| Create | a valid record is saved and shown; each client-side validation message appears; one server-side rejection (duplicate, rule violation) is shown |
-| Edit | a change persists after reload; cancel leaves the record unchanged |
-| Delete, deactivate | a record the test created goes away after confirming; cancelling the confirmation keeps it |
-| Child records | add, edit, toggle and remove items inside a record (lines, rules, notes), on a record the test created |
-| Background jobs | starting one shows progress and the finished result; a failing case shows its error |
-| Navigation | the main nav reaches each screen; an unknown URL shows the not-found page |
+| Workflow           | Tests                                                                                                                                          |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| List               | shows records; each search and filter narrows the results; the empty state shows when nothing matches                                          |
+| Detail             | opening a record from the list shows its key fields; an unknown id shows the not-found state                                                   |
+| Create             | a valid record is saved and shown; each client-side validation message appears; one server-side rejection (duplicate, rule violation) is shown |
+| Edit               | a change persists after reload; cancel leaves the record unchanged                                                                             |
+| Delete, deactivate | a record the test created goes away after confirming; cancelling the confirmation keeps it                                                     |
+| Child records      | add, edit, toggle and remove items inside a record (lines, rules, notes), on a record the test created                                         |
+| Background jobs    | starting one shows progress and the finished result; a failing case shows its error                                                            |
+| Navigation         | the main nav reaches each screen; an unknown URL shows the not-found page                                                                      |
 
 Skip a row when the app has no such feature, or when it needs a write the user did not allow. Record each skip and
 its reason in `docs/app.md` under "Not covered". Prefer one clear test per behavior over one long test per screen.
