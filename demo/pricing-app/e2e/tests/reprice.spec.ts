@@ -1,5 +1,6 @@
 import { expect, test } from "../harness/fixtures.ts";
 import { addRule, createProduct, usd } from "./support.ts";
+import type { Page } from "../harness/fixtures.ts";
 
 // Repricing sets the final price to the list price less the sum of enabled rules, capped at 90%, rounded to cents.
 function repriced(listPrice: number, enabledPercents: readonly number[]): number {
@@ -8,6 +9,23 @@ function repriced(listPrice: number, enabledPercents: readonly number[]): number
     90
   );
   return Math.round(listPrice * (100 - percent)) / 100;
+}
+
+/** Reprices and waits for the job that moves the final price from `from` to `to`. */
+async function reprice(page: Page, from: number, to: number): Promise<void> {
+  await test.step(`reprice from ${usd(from)} to ${usd(to)}`, async () => {
+    await page.getByRole("button", { name: "Reprice" }).click();
+    await expect(page.getByText(`Repriced: ${usd(from)} → ${usd(to)}`)).toBeVisible({ timeout: 15_000 });
+  });
+}
+
+async function expectPrices(page: Page, listPrice: number, finalPrice: number): Promise<void> {
+  await expect(page.getByRole("main")).toMatchAriaSnapshot(`
+    - term: List price
+    - definition: ${JSON.stringify(usd(listPrice))}
+    - term: Final price
+    - definition: ${JSON.stringify(usd(finalPrice))}
+  `);
 }
 
 test.describe("Reprice", { tag: "@reprice" }, () => {
@@ -62,5 +80,40 @@ test.describe("Reprice", { tag: "@reprice" }, () => {
       - term: Final price
       - definition: ${JSON.stringify(usd(80))}
     `);
+  });
+
+  test("a switched-off rule no longer affects the price when the product is repriced", async ({ page }) => {
+    await createProduct(page, { listPrice: 200 });
+    await addRule(page, "E2E promo", 30);
+    await reprice(page, 200, repriced(200, [30]));
+
+    await page.getByRole("row").filter({ hasText: "E2E promo" }).getByRole("switch").click();
+    await expect(page.getByText("Rule disabled. Reprice to apply it.")).toBeVisible();
+    await reprice(page, repriced(200, [30]), repriced(200, []));
+
+    await page.reload();
+    await expectPrices(page, 200, 200);
+  });
+
+  test("changing the list price keeps the final price until the product is repriced", async ({ page }) => {
+    await createProduct(page, { listPrice: 200 });
+    await addRule(page, "E2E quarter off", 25);
+    await reprice(page, 200, repriced(200, [25]));
+
+    await test.step("change the list price to 300", async () => {
+      await page.getByRole("link", { name: "Edit product" }).click();
+      // The form fills itself once the product loads, overwriting anything typed before that.
+      await expect(page.getByLabel("List price")).toHaveValue("200");
+      await page.getByLabel("List price").fill("300");
+      await page.getByRole("button", { name: "Save" }).click();
+      await expect(page.getByText("Product saved")).toBeVisible();
+    });
+
+    await page.reload();
+    await expectPrices(page, 300, repriced(200, [25]));
+
+    await reprice(page, repriced(200, [25]), repriced(300, [25]));
+    await page.reload();
+    await expectPrices(page, 300, repriced(300, [25]));
   });
 });

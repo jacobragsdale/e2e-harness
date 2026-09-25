@@ -22,7 +22,6 @@ export function e2eName(what: string): string {
 /**
  * A random SKU in the app's ABC-123 format. Seeded SKUs never start with Q, and 676,000 combinations make a clash
  * with an earlier E2E product unlikely; the server rejects one with "SKU already exists".
- * ponytail: no DB check for a free SKU, because reads during QA writes can fail with "database is locked" (see docs/app.md).
  */
 export function randomSku(): string {
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

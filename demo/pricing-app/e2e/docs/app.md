@@ -108,17 +108,9 @@ or rule change. Job STATUS `QUEUED`, `RUNNING`, `DONE`, `FAILED`.
 | Jobs list "Refresh" button                 | Reloads the same list; the reprice test covers the listed job.                              |
 | Server-side rule validation (percent > 90) | The dialog blocks it client-side; the UI cannot send it.                                    |
 | "Could not load products." error state     | Needs the API to fail; the harness does not mock responses.                                 |
+| Who requested a reprice job                | Required, but not built: no login, and jobs store only REQUESTED_AT (the "Requested" time). |
 
 ## Known app issues
 
-- Editing a product always fails: the form sends `sku` (from `getRawValue()`, which includes the disabled SKU),
-  and `PUT /api/products/:id` rejects it with 400 `Unrecognized key: "sku"`. The form shows no message, because
-  `describeError` reports it under the field `body`, which no control has. `tests/product-edit.spec.ts` fails until fixed.
-- The rule delete button and the Enabled switches have no accessible name.
-
-## Harness notes
-
-- The QA SQLite runs in rollback-journal mode, and `harness/db.ts` opens it without a busy timeout, so a `db` read
-  that lands during a server write fails with `database is locked` (seen once in 96 runs). Fix upstream by passing
-  `timeout` to `new DatabaseSync(...)`. Until then, write tests make SKUs with `randomSku()` instead of querying the DB.
-- `e2e/.editorconfig` (`root = true`) keeps the app's `.editorconfig` (`quote_type = single`) out of Prettier here.
+- The rule delete button and the Enabled switches have no accessible name. Tests find the delete button by its icon
+  text and the switch by its row.
