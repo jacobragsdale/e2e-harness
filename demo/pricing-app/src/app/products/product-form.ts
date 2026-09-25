@@ -70,6 +70,9 @@ export class ProductForm {
     if (typeof server === 'string') {
       return server;
     }
+    if (control.hasError('maxlength')) {
+      return 'Name must be 80 characters or fewer';
+    }
     return control.invalid ? messages[field] : '';
   }
 
