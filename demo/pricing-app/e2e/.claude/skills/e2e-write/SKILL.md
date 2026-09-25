@@ -115,6 +115,8 @@ Rules, each from a failure seen in practice:
   `dialog` named by its title. A snackbar is transient: assert it right after the action with `getByText`, or
   assert the lasting outcome instead. Icon-only buttons are named by their `aria-label`, or by the icon ligature
   text (`delete`) when the app omitted one.
+- **Edit forms fill themselves after load.** An Angular form that loads a record patches its fields when the data
+  arrives, overwriting anything typed earlier. Assert a loaded value (`toHaveValue("200")`) before typing into it.
 - **Wait on what the user sees.** Use web-first assertions (`await expect(locator).toHave...`). For background work,
   raise that assertion's timeout. Use `page.waitForResponse` only when nothing visible changes. Lint rejects
   `waitForTimeout`, `networkidle`, `force: true`, `test.skip`, and conditionals in tests.

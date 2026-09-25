@@ -35,13 +35,25 @@ and is shown to fail when its expected value is wrong.
 
 ## This repo
 
-| Path | What |
-|---|---|
-| `template/` | what gets stamped into `<app>/e2e/` |
-| `copier.yml` | the question (`app_name`) and the app-owned files `copier update` leaves alone |
-| `demo/pricing-app/` | a real Angular 22 + Material app (products, discount rules, reprice jobs) with a Node API over SQLite, to develop and evaluate against |
-| `demo/pricing-app/e2e/` | the suite the `e2e-setup` skill wrote for the demo, unedited, as a reference |
-| `check.sh` | stamps the template, runs its static checks and unit tests, then runs the demo suite against the demo app |
+| Path                    | What                                                                                                                                   |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `template/`             | what gets stamped into `<app>/e2e/`                                                                                                    |
+| `copier.yml`            | the question (`app_name`) and the app-owned files `copier update` leaves alone                                                         |
+| `demo/pricing-app/`     | a real Angular 22 + Material app (products, discount rules, reprice jobs) with a Node API over SQLite, to develop and evaluate against |
+| `demo/pricing-app/e2e/` | the suite the skills wrote for the demo in eval runs (34 tests), as a reference                                                        |
+| `evals/run.sh`          | runs one skill eval: a headless Claude Code session in a fresh copy of the demo repo                                                   |
+| `check.sh`              | stamps the template, runs its static checks and unit tests, then runs the demo suite against the demo app                              |
+
+## How the skills were evaluated
+
+Each skill ran in a headless Claude Code session (`evals/run.sh`) in a fresh copy of the demo repo, given only a
+user's request, with no one there to answer questions:
+
+| Eval     | Request                                                                                                | Result                                                                                                                                                                                                                                                                                                      |
+| -------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `setup`  | "Set up the e2e tests for this app"                                                                    | 32 tests in 7 files covering every workflow in the skill's table, with each assertion shown to fail when its expected value is wrong. It found a real bug in the demo (editing a product silently failed) and left those tests failing on it, and it found two template defects, since fixed. 12 min, $2.43 |
+| `write`  | three BA requirements, one of which the app can't satisfy ("every reprice job shows who requested it") | Two tests, 50/50 passing runs. It found and fixed a form-load race, and reported the third requirement as a missing feature rather than writing a test that can't pass. 9 min, $0.72                                                                                                                        |
+| `triage` | "the nightly run went red after today's deploy" (a button was renamed and repricing broke)             | It updated the locators for the intended rename, left the pricing test failing, and reported the bug with steps, the deploy commit and the file and line. It changed no app code and weakened no assertion. 8.5 min, $0.42                                                                                  |
 
 Run the demo: `cd demo/pricing-app && npm ci && npm run db:reset && npm start`, then open
 <http://pricing-qa.localhost:4300>. `*.localhost` resolves to your machine in Chromium, and the `qa` in the host name

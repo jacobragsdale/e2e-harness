@@ -1,4 +1,4 @@
 # Changes here will be overwritten by Copier; do not edit by hand. `uvx copier update` reads it.
-_commit: 27a9d1a
-_src_path: /home/jacob/dev/e2e-harness
+_commit: 3d9a3d7
+_src_path: gh:jacobragsdale/e2e-harness
 app_name: Pricing Admin

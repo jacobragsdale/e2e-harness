@@ -9,7 +9,11 @@ server=
 trap '[ -n "$server" ] && kill "$server"; rm -rf "$out"' EXIT
 
 cp "$demo/.editorconfig" "$out/"  # stamp as if inside an app repo, whose editorconfig must not leak in
-uvx copier copy --defaults --quiet --vcs-ref HEAD "$here" "$out/e2e"
+uvx copier copy --defaults --quiet --vcs-ref HEAD --data app_name="Pricing Admin" "$here" "$out/e2e"
+if ! diff -rq -x node_modules -x .env -x tests -x test-results -x playwright-report -x app.md -x playwright.config.ts -x .copier-answers.yml "$out/e2e" "$demo/e2e"; then
+  echo "check.sh: demo/pricing-app/e2e has stale template files; run demo/restamp.sh" >&2
+  exit 1
+fi
 cd "$out/e2e"
 npm ci --silent
 npm run check
