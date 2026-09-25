@@ -13,7 +13,8 @@ here=$(cd "$(dirname "$0")/.." && pwd)
 demo=$here/demo/pricing-app
 out=${2:-$(mktemp -d)}
 app=$out/pricing-app
-port=4320
+declare -A ports=([setup]=4321 [write]=4322 [triage]=4323)  # one per kind, so evals can run side by side
+port=${ports[$kind]:-4320}
 server=
 trap '[ -n "$server" ] && kill "$server"' EXIT
 
